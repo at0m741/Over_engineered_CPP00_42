@@ -35,9 +35,9 @@
 
 	#define PROCESS_32_CHARS_AVX2(str, i, len, lower_z, lower_a, upper_mask)								\
 		for (int i = 0; i <= len - 32; i += 32) {															\
-			Aligned_32 data  = Loadreg_32(str.data() + i);													\
-	        Aligned_32  mask = Andnot_32(Cmp_32(data, lower_z),Cmp_32(data, Sub_32(lower_a, Setreg_32(1))));\
-			Aligned_32  result = Or_32(And_32(mask, And_32(data, upper_mask)),Andnot_32(mask, data));       \
+			const Aligned_32 data  = Loadreg_32(str.data() + i);													\
+	        const Aligned_32  mask = Andnot_32(Cmp_32(data, lower_z),Cmp_32(data, Sub_32(lower_a, Setreg_32(1))));\
+			const Aligned_32  result = Or_32(And_32(mask, And_32(data, upper_mask)),Andnot_32(mask, data));       \
 			Prefetch_32(str.data() + i + 32);																\
 			Storereg_32((__m256i*)(str.data() + i), result);												\
 		}

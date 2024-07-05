@@ -6,27 +6,26 @@
 /*   By: ltouzali <ltouzali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 17:02:24 by ltouzali          #+#    #+#             */
-/*   Updated: 2024/07/05 14:54:58 by babonnet         ###   ########.fr       */
+/*   Updated: 2024/07/06 01:08:34 by babonnet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <string>
 #include <iostream>
-#include <algorithm>
 
 #if defined(__AVX2__)
 	#include "megaphone.hpp"	
     #include <immintrin.h>
-	
+	#include <cstring>
+	#include <cstdio> // use for puts if you want to prove that the code is working
+					  //
 	__attribute__((__always_inline__, __nodebug__)) 
-	void to_upper_avx2(std::string& str) 
-	{
-	    int len = str.size();
-
-	    std::cout << "\nAVX2 toupper used \n" << std::endl;
-	    Aligned_32 lower_a = Setreg_32('a');
-	    Aligned_32 lower_z = Setreg_32('z');
-	    Aligned_32 upper_mask = Setreg_32(0xDF); // 0xDF -> 11011111
+	inline void to_upper_avx2(std::string& str) {
+		__attribute__((aligned(32))) int len = strlen(str.c_str());
+	   
+	    const Aligned_32 lower_a = Setreg_32('a');
+	    const Aligned_32 lower_z = Setreg_32('z');
+	    const Aligned_32 upper_mask = Setreg_32(0xDF); // 0xDF -> 11011111
 		Prefetch_32(str.data());	
 		Prefetch_32(str.data() + 32);
 	    PROCESS_32_CHARS_AVX2(str, i, len, lower_z, lower_a, upper_mask);
@@ -38,15 +37,14 @@
 	}
 
 #elif defined(AVX512)
-
 	#include "megaphone.hpp"
     #include <immintrin.h>
-
+	#include <cstring>
+	
 	__attribute__((__always_inline__, __nodebug__))
-    void to_upper_avx512(std::string& str) {
-        ALIGN64 int len = str.size();
+    inline void to_upper_avx512(std::string& str) {
+        __attribute__((aligned(64))) int len = strlen(str.c_str());
 
-        std::cout << "AVX512 toupper used \n" << std::endl;
         ALIGN64 __m512i lower_a = _mm512_set1_epi8('a');
         ALIGN64 __m512i lower_z = _mm512_set1_epi8('z');
         ALIGN64 __m512i upper_mask = _mm512_set1_epi8(0xDF);

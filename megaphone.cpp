@@ -35,7 +35,7 @@
 		}
 	}
 
-#elif defined(AVX512)
+#elif defined(__AVX512__)
 	#include "megaphone.hpp"
 	#include <immintrin.h>
 	#include <cstring>

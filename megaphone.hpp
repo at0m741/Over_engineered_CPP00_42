@@ -42,7 +42,7 @@
 			Storereg_32((__m256i*)(str.data() + i), result);							\
 		}
 
-#elif defined (__AVX512)
+#elif defined (__AVX512__)
 	
 	//AVX512f implementation
 	// same as the AVX2 implementation, but with 512-bit registers and instructions.

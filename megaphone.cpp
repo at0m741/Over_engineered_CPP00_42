@@ -15,7 +15,7 @@
 
 #if defined(__AVX2__)
 	#include "megaphone.hpp"	
-    #include <immintrin.h>
+    	#include <immintrin.h>
 	#include <cstring>
 	#include <cstdio> // use for puts if you want to prove that the code is working
 					  //
@@ -26,8 +26,8 @@
 	    const Aligned_32 lower_a = Setreg_32('a');
 	    const Aligned_32 lower_z = Setreg_32('z');
 	    const Aligned_32 upper_mask = Setreg_32(0xDF); // 0xDF -> 11011111
-		Prefetch_32(str.data());	
-		Prefetch_32(str.data() + 32);
+	    Prefetch_32(str.data());	
+	    Prefetch_32(str.data() + 32);
 	    PROCESS_32_CHARS_AVX2(str, i, len, lower_z, lower_a, upper_mask);
 	    for (int i = 0; i < len; ++i) {
 			if (str[i] >= 'a' && str[i] <= 'z') {
@@ -37,11 +37,11 @@
 	}
 
 #elif defined(AVX512)
-	#include "megaphone.hpp"
+    #include "megaphone.hpp"
     #include <immintrin.h>
-	#include <cstring>
+    #include <cstring>
 	
-	__attribute__((__always_inline__, __nodebug__))
+    __attribute__((__always_inline__, __nodebug__))
     inline void to_upper_avx512(std::string& str) {
         __attribute__((aligned(64))) int len = strlen(str.c_str());
 
@@ -49,9 +49,9 @@
         ALIGN64 __m512i lower_z = _mm512_set1_epi8('z');
         ALIGN64 __m512i upper_mask = _mm512_set1_epi8(0xDF);
         PREFETCH64(str.data());
-		PREFETCH64(str.data() + 32);
-		PREFETCH64(str.data() + 64);
-		PROCESS_64_CHARS_AVX512(str, i, len, lower_z, lower_a, upper_mask);
+	PREFETCH64(str.data() + 32);
+	PREFETCH64(str.data() + 64);		
+	PROCESS_64_CHARS_AVX512(str, i, len, lower_z, lower_a, upper_mask);
         for (int i = 0; i < len; ++i) {
             if (str[i] >= 'a' && str[i] <= 'z') {
                 str[i] &= 0xDF;
